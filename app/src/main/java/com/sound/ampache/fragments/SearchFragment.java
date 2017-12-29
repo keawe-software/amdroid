@@ -27,11 +27,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -75,10 +77,12 @@ public final class SearchFragment extends Fragment implements AmpacheListView.Is
 		searchCriteria.setAdapter(adapter);
 		searchString = (EditText) view.findViewById(R.id.search_text);
 
-        //searchString.setOnKeyListener(this);
-        //searchString.setOnEditorActionListener(this);
         searchString.addTextChangedListener(this);
-
+        searchString.clearFocus();
+        if(searchString.requestFocus()) {
+        	Log.d("SearchFragemen","Focus on edit");
+			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		}
 
 		// Bind clicklistener for our search button
 		((ImageButton) view.findViewById(R.id.search_button)).setOnClickListener(this);
