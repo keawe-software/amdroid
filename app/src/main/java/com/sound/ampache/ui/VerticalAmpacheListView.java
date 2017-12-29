@@ -21,6 +21,7 @@ package com.sound.ampache.ui;
  * +------------------------------------------------------------------------+
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -105,6 +107,12 @@ public class VerticalAmpacheListView extends ListView implements OnItemClickList
 
 	}
 
+	public void scrollMainMenu(){
+		Activity app = (Activity)getContext();
+		HorizontalScrollView mainMenu = (HorizontalScrollView) app.findViewById(R.id.horizontalScrollView);
+		mainMenu.scrollTo(0,0);
+	}
+
 	@Override
 	public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long arg3)
 	{
@@ -116,6 +124,9 @@ public class VerticalAmpacheListView extends ListView implements OnItemClickList
 		} else {
 			amdroid.playbackControl.addPlaylistCurrent((Media) cur);
 		}
+
+		scrollMainMenu(); // often, we want to go to the current playlist after adding media. This is easier, when we don't have to scroll.
+
 		return true;
 	}
 
