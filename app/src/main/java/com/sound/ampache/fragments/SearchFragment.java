@@ -23,12 +23,16 @@ package com.sound.ampache.fragments;
  */
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,13 +41,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sound.ampache.R;
-import com.sound.ampache.ui.AmpacheListView;
-import com.sound.ampache.ui.VerticalAmpacheListView;
 import com.sound.ampache.net.AmpacheApiAction;
 import com.sound.ampache.objects.Directive;
+import com.sound.ampache.ui.AmpacheListView;
+import com.sound.ampache.ui.VerticalAmpacheListView;
 
-public final class SearchFragment extends Fragment implements AmpacheListView.IsFetchingListener, OnClickListener
-{
+public final class SearchFragment extends Fragment implements AmpacheListView.IsFetchingListener, OnClickListener, View.OnKeyListener, TextView.OnEditorActionListener, TextWatcher {
 
 	private Spinner searchCriteria;
 	private EditText searchString;
@@ -71,6 +74,11 @@ public final class SearchFragment extends Fragment implements AmpacheListView.Is
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		searchCriteria.setAdapter(adapter);
 		searchString = (EditText) view.findViewById(R.id.search_text);
+
+        //searchString.setOnKeyListener(this);
+        //searchString.setOnEditorActionListener(this);
+        searchString.addTextChangedListener(this);
+
 
 		// Bind clicklistener for our search button
 		((ImageButton) view.findViewById(R.id.search_button)).setOnClickListener(this);
@@ -119,7 +127,15 @@ public final class SearchFragment extends Fragment implements AmpacheListView.Is
 		ampacheListView.clearHistory();
 		ampacheListView.enqueRequest(new Directive(action, searchQuery, searchQuery));
 
-	}
+
+        searchString.selectAll();
+        searchString.requestFocus();
+
+        Context c = v.getContext();
+        InputMethodManager imm = (InputMethodManager)c.getSystemService(v.getContext().INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+    }
 
 	@Override
 	public void onIsFetchingChange(boolean isFetching)
@@ -131,19 +147,46 @@ public final class SearchFragment extends Fragment implements AmpacheListView.Is
 		}
 	}
 
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
+            onClick(v);
+            return true;
+        }
 
-	/*
-	 * Override "back button" behavior on android 1.6
-	 */
-	public boolean onKeyDown(int keyCode, KeyEvent event)
-	{
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			// Take care of calling this method on earlier versions of
-			// the platform where it doesn't exist.
-			return ampacheListView.backPressed();
-		}
+        // TODO: implement onKey
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        // TODO: implement onEditorAction
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
+            onClick(v);
+            return true;
+        }
 
+        return false;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // TODO: implement beforeTextChanged
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // TODO: implement onTextChanged
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        // TODO: implement afterTextChanged
+        if (s.toString().endsWith("\n")) {
+            searchString.setText(s.toString().trim());
+            onClick(searchString);
+        }
+    }
 }
