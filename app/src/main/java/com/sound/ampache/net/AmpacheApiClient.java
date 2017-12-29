@@ -85,8 +85,11 @@ public class AmpacheApiClient
 		AmpacheDataHandler hand = new AmpacheDataHandler();
 		reader.setContentHandler(hand);
 		try {
+			if (authToken == null || authToken.isEmpty()){
+				this.perform_auth_request();
+			}
 			reader.parse(new InputSource(fetchFromServer("auth=" + this.authToken)));
-			if (hand.errorCode == 401) {
+			if (hand.errorCode >= 400 && hand.errorCode < 500) {
 				this.perform_auth_request();
 			}
 		} catch (MalformedURLException e) {
@@ -127,7 +130,7 @@ public class AmpacheApiClient
         /* request server auth */
 		AmpacheAuthParser hand = new AmpacheAuthParser();
 		reader.setContentHandler(hand);
-		String user = prefs.getString("server_username_preference", "");
+		String user = prefs.getString("server_username_preference", "").trim();
 		try {
 			reader.parse(new InputSource(fetchFromServer("action=handshake&auth=" + hash + "&timestamp=" + time + "&version=350001&user=" + user)));
 		} catch (Exception e) {
@@ -175,7 +178,7 @@ public class AmpacheApiClient
 	 */
 	private InputStream fetchFromServer(String append) throws Exception
 	{
-		URL fullUrl = new URL(prefs.getString("server_url_preference", "") + "/server/xml.server.php?" + append);
+		URL fullUrl = new URL(prefs.getString("server_url_preference", "").trim() + "/server/xml.server.php?" + append);
 		return fullUrl.openStream();
 	}
 
@@ -286,7 +289,7 @@ public class AmpacheApiClient
 					}
 
                         /* now we fetch */
-					String urlText = prefs.getString("server_url_preference", "") + "/server/xml.server.php?" + append;
+					String urlText = prefs.getString("server_url_preference", "").trim() + "/server/xml.server.php?" + append;
 					try {
 						URL url = new URL(urlText);
 						dataIn = new InputSource(url.openStream());
