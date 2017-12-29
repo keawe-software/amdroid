@@ -78,10 +78,9 @@ public final class SearchFragment extends Fragment implements AmpacheListView.Is
 		searchString = (EditText) view.findViewById(R.id.search_text);
 
         searchString.addTextChangedListener(this);
-        searchString.clearFocus();
         if(searchString.requestFocus()) {
-        	Log.d("SearchFragemen","Focus on edit");
-			getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+			InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+			imgr.showSoftInput(searchString,0);
 		}
 
 		// Bind clicklistener for our search button
