@@ -111,67 +111,6 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 		amdroid.playbackControl.unregisterServiceStatusListener(playbackListener);
 	}
 
-	/*@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.clear();
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.playlist_menu, menu);
-        return true;
-    }*/
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.pl_clear:
-            if (amdroid.playbackControl.isPlaying())
-                amdroid.playbackControl.stop();
-            amdroid.playbackControl.setPlayingIndex(0);
-            pla.clearItems();
-            break;
-
-        case R.id.pl_save:
-            try {
-                FileOutputStream pout = openFileOutput("playlist", 0);
-                ObjectOutputStream pos = new ObjectOutputStream(pout);
-                pos.writeObject(amdroid.playbackControl.getPlaylistCurrent());
-                pout.close();
-            } catch (Exception poo) {
-                Toast.makeText(this, "Error: " + poo.toString(), Toast.LENGTH_LONG).show();
-            }
-            break;
-
-        case R.id.pl_load:
-            if (amdroid.playbackControl.isPlaying())
-                amdroid.playbackControl.stop();
-            amdroid.playbackControl.setPlayingIndex(0);
-            //mc.setEnabled(false);
-            try {
-                FileInputStream pin = openFileInput("playlist");
-                ObjectInputStream poin = new ObjectInputStream(pin);
-                amdroid.playbackControl.addAllPlaylistCurrent( (ArrayList<Media>) poin.readObject() );
-                pin.close();
-            } catch (Exception poo) {
-                Toast.makeText(this, "Error: " + poo.toString(), Toast.LENGTH_LONG).show();
-            }
-            pla.refresh();
-            break;
-
-
-        case R.id.pl_albumart:
-            if (albumArtEnabled) {
-                albumArtEnabled = false;
-                artView.setVisibility(View.GONE);
-            }
-            else {
-                artView.setVisibility(View.VISIBLE);
-                albumArtEnabled = true;
-                loadAlbumArt();
-            }
-            break;
-        }
-        return true;
-    }*/
-
 	private void loadAlbumArt()
 	{
 		if (amdroid.playbackControl.getPlaylistCurrent().size() <= 0 || !albumArtEnabled) {
