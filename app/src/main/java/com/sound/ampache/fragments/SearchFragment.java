@@ -46,7 +46,7 @@ import com.sound.ampache.objects.Directive;
 import com.sound.ampache.ui.AmpacheListView;
 import com.sound.ampache.ui.VerticalAmpacheListView;
 
-public final class SearchFragment extends Fragment implements AmpacheListView.IsFetchingListener, OnClickListener, View.OnKeyListener, TextView.OnEditorActionListener, TextWatcher {
+public final class SearchFragment extends Fragment implements AmpacheListView.IsFetchingListener, OnClickListener, TextWatcher {
 
 	private Spinner searchCriteria;
 	private EditText searchString;
@@ -148,28 +148,6 @@ public final class SearchFragment extends Fragment implements AmpacheListView.Is
 	}
 
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
-            onClick(v);
-            return true;
-        }
-
-        // TODO: implement onKey
-        return false;
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        // TODO: implement onEditorAction
-        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
-            onClick(v);
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         // TODO: implement beforeTextChanged
 
@@ -183,10 +161,10 @@ public final class SearchFragment extends Fragment implements AmpacheListView.Is
 
     @Override
     public void afterTextChanged(Editable s) {
-        // TODO: implement afterTextChanged
+        // this callback has to be used since onKeyListeners may not work with some soft keyboards
         if (s.toString().endsWith("\n")) {
-            searchString.setText(s.toString().trim());
-            onClick(searchString);
+            searchString.setText(s.toString().trim()); // remove trailing whitespaces and line breaks
+            onClick(searchString); // execute search
         }
     }
 }
